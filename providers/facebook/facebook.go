@@ -18,7 +18,7 @@ import (
 const (
 	authURL         string = "https://www.facebook.com/dialog/oauth"
 	tokenURL        string = "https://graph.facebook.com/oauth/access_token"
-	endpointProfile string = "https://graph.facebook.com/me?fields=email,first_name,last_name,link,bio,id,name,picture,location"
+	endpointProfile string = "https://graph.facebook.com/me?fields=email,id,first_name,last_name,timezone,verified,birthday,gender"
 )
 
 // New creates a new Facebook provider, and sets up important connection details.
@@ -96,19 +96,11 @@ func (p *Provider) UnmarshalSession(data string) (goth.Session, error) {
 
 func userFromReader(reader io.Reader, user *goth.User) error {
 	u := struct {
-		ID      string `json:"id"`
-		Email   string `json:"email"`
-		Bio     string `json:"bio"`
-		Name    string `json:"name"`
-		Link    string `json:"link"`
-		Picture struct {
-			Data struct {
-				URL string `json:"url"`
-			} `json:"data"`
-		} `json:"picture"`
-		Location struct {
-			Name string `json:"name"`
-		} `json:"location"`
+		ID        string `json:"id"`
+		Email     string `json:"email"`
+		FirstName string `json:"first_name"`
+		LastName  string `json:"last_name"`
+		Gender    string `json:"gender"`
 	}{}
 
 	err := json.NewDecoder(reader).Decode(&u)
